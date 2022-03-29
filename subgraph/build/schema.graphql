@@ -1,0 +1,23 @@
+type AutoRoostFactory @entity {
+  id: ID!
+  fee: BigInt
+}
+
+type AutoRoost @entity {
+  id: ID!
+  owner: User!
+  chickens: [Chicken!] @derivedFrom(field: "roost")
+}
+
+type User @entity {
+  id: ID!
+  roosts: [AutoRoost!] @derivedFrom(field: "owner")
+  chickens: [Chicken!] @derivedFrom(field: "owner")
+}
+
+type Chicken @entity {
+  id: ID!
+  owner: User!
+  roost: AutoRoost
+  size: BigInt!
+}

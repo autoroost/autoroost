@@ -1,0 +1,74 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: AutoRoostFactory
+    network: avalanche
+    source:
+      address: "0xf4bdf20338b3e4c9687fe7352d1cf920670c365c"
+      abi: AutoRoostFactory
+      startBlock: 13046551
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - AutoRoostCreated
+        - FeeUpdate
+      abis:
+        - name: AutoRoostFactory
+          file: ./abis/AutoRoostFactory.json
+      eventHandlers:
+        - event: AutoRoostCreated(address,address)
+          handler: handleCreation
+        - event: FeeUpdate(uint256)
+          handler: handleFeeUpdate
+      file: ./src/mappings/factory.ts
+  - kind: ethereum/contract
+    name: Chicken
+    network: avalanche
+    source:
+      address: "0x8927985b358692815e18f2138964679dca5d3b79"
+      abi: Chicken
+      startBlock: 6767656
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Transfer
+        - LevelUp
+      abis:
+        - name: Chicken
+          file: ./abis/Chicken.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+        - event: LevelUp(uint256,uint256)
+          handler: handleLevelUp
+      file: ./src/mappings/chicken.ts
+templates:
+  - kind: ethereum/contract
+    name: AutoRoost
+    network: avalanche
+    source:
+      abi: AutoRoost
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - OwnershipTransferred
+        - Deposit
+      abis:
+        - name: AutoRoost
+          file: ./abis/AutoRoost.json
+      eventHandlers:
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: Deposit(uint256,address)
+          handler: handleDeposit
+        - event: WithdrawChikn(uint256,address)
+          handler: handleWithdrawChikn
+      file: ./src/mappings/roost.ts
