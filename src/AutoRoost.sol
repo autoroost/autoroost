@@ -112,9 +112,11 @@ contract AutoRoost is OwnableUpgradeable {
         uint256 feedAvailable = _feed.balanceOf(address(this));
 
         for (uint256 i = 0; i < chiknIds.length && feedAvailable > 1e18; i++) {
-            (uint256 kg,,,uint256 eaten,)= _egg.stakedChikn(chiknIds[i]);
+            (uint256 kg,,,uint256 eaten,uint256 cooldownTs)= _egg.stakedChikn(chiknIds[i]);
             uint256 feedToLevel = (_egg.feedLevelingRate(kg) - eaten) * 1e18;
-            if (feedAvailable >= feedToLevel) {
+            if (feedToLevel == 0 && block.timestamp > cooldownTs) {
+                _egg.levelUpChikn(chiknIds[i]);
+            } else if (feedAvailable >= feedToLevel && block.timestamp > cooldownTs) {
                 _feed.feedChikn(chiknIds[i], feedToLevel);
                 _egg.levelUpChikn(chiknIds[i]);
                 feedAvailable -= feedToLevel;

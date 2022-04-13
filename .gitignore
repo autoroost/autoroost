@@ -3,4 +3,6 @@ out/
 **/node_modules
 server/
 app/
+server/**/*
+app/**/*
 **/build/
